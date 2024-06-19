@@ -26,7 +26,8 @@ import sys, os, re, codecs, json, argparse, getpass, base64
 from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 import ldap3
-from ldap3 import Server, Connection, SIMPLE, SYNC, ALL, SASL, NTLM
+# Extra imports for LDAP channel binding support
+from ldap3 import Server, Connection, SIMPLE, SYNC, ALL, SASL, NTLM, AUTO_BIND_NO_TLS, AUTO_BIND_TLS_BEFORE_BIND
 from ldap3.core.exceptions import LDAPKeyError, LDAPAttributeError, LDAPCursorError, LDAPInvalidDnError
 from ldap3.abstract import attribute, attrDef
 from ldap3.utils import dn
@@ -937,10 +938,18 @@ def main():
     else:
         log_info('Connecting as anonymous user, dumping will probably fail. Consider specifying a username/password to login with')
     # define the server and the connection
-    s = Server(args.host, get_info=ALL)
+    # Adding support for channel binding
+    s = Server(args.host, get_info=ALL, use_ssl=True)
     log_info('Connecting to host...')
 
-    c = Connection(s, user=args.user, password=args.password, authentication=authentication)
+    # Adding channel binding feature
+    c = Connection(
+    s,
+    user=args.user,
+    password=args.password,
+    authentication=authentication,
+    auto_bind=AUTO_BIND_TLS_BEFORE_BIND
+    )
     log_info('Binding to host')
     # perform the Bind operation
     if not c.bind():
