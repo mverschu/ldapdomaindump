@@ -877,6 +877,8 @@ def main():
     parser.add_argument("-u", "--user", type=str, metavar='USERNAME', help="DOMAIN\\username for authentication, leave empty for anonymous authentication")
     parser.add_argument("-p", "--password", type=str, metavar='PASSWORD', help="Password or LM:NTLM hash, will prompt if not specified")
     parser.add_argument("-at", "--authtype", type=str, choices=['NTLM', 'SIMPLE'], default='NTLM', help="Authentication type (NTLM or SIMPLE, default: NTLM)")
+    parser.add_argument("--user-dn", type=str, metavar='USER_DN', help="Distinguished Name (DN) of the user for authentication")
+
 
     #Output parameters
     outputgroup = parser.add_argument_group("Output options")
@@ -923,6 +925,15 @@ def main():
     #Do we really need grouped json files?
     cnf.groupedjson = args.grouped_json
 
+    # Use user_dn if provided, otherwise use DOMAIN\username format
+    if args.user_dn:
+        user_dn = args.user_dn
+    else:
+        if args.user is None:
+            log_warn('Username or user DN (channel binding) must be specified')
+            sys.exit(1)
+        user_dn = args.user
+        
     #Prompt for password if not set
     authentication = None
     if args.user is not None:
@@ -945,12 +956,16 @@ def main():
     # Adding channel binding feature
     c = Connection(
     s,
-    user=args.user,
+    # Required for ldap channel binding
+    user=user_dn,
     password=args.password,
-    authentication=authentication,
-    auto_bind=AUTO_BIND_TLS_BEFORE_BIND
+    #user=args.user,
+    #password=args.password,
+    authentication=SIMPLE,
+    auto_bind=AUTO_BIND_NO_TLS
     )
     log_info('Binding to host')
+
     # perform the Bind operation
     if not c.bind():
         log_warn('Could not bind with specified credentials')
