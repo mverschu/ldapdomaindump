@@ -1,5 +1,5 @@
 # LDAPDomainDump
-Active Directory information dumper via LDAP **with Channel Binding support!**
+Active Directory information dumper via LDAP **with Channel Binding / Kerberos support!**
 
 ## Help menu
 
