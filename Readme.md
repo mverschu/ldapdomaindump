@@ -1,4 +1,5 @@
 # LDAPDomainDump
+<img width="350" height="350" alt="image" src="https://github.com/user-attachments/assets/cab2f220-7326-4e19-883f-a4a047c2554a" />
 
 Active Directory information dumper via LDAP. Same arguments and output formats as [adwsdomaindump](https://github.com/mverschu/adwsdomaindump), using LDAP instead of ADWS.
 
