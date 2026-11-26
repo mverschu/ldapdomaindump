@@ -1,13 +1,13 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 setup(name='ldapdomaindump',
-      version='0.9.4',
+      version='0.11.0',
       description='Active Directory information dumper via LDAP',
       author='Dirk-jan Mollema',
       author_email='dirkjan@sanoweb.nl',
-      url='https://github.com/dirkjanm/ldapdomaindump/',
-      packages=['ldapdomaindump'],
+      url='https://github.com/mverschu/ldapdomaindump/',
+      packages=find_packages(),
       requires_python=">=3.6",
-      install_requires=['dnspython', 'ldap3>=2.5,!=2.5.2,!=2.5.0,!=2.6'],
+      install_requires=['dnspython', 'impacket>=0.11.0', 'pycryptodomex', 'certihound>=0.3.2'],
       package_data={'ldapdomaindump': ['style.css']},
       include_package_data=True,
       scripts=['bin/ldapdomaindump', 'bin/ldd2bloodhound', 'bin/ldd2pretty'],
